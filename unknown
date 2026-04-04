@@ -1,0 +1,6 @@
+{
+  "engineeringFixes": [
+    {
+      "filePath": "docs/.vitepress/theme/components/VPCodeGroup.vue",
+      "description": "Added an 'aria-label' attribute to the copy button within the code group component to provide an accessible name for screen readers, satisfying WCAG 2.1 requirements.",
+      "fixedCode": "<script setup lang=\"ts\">\nimport { ref } from 'vue'\n\nconst props = defineProps<{\n  items: { title: string; code: string }[]\n}>()\n\nconst activeIndex = ref(0)\n</script>\n\n<template>\n  <div class=\"vp-code-group
