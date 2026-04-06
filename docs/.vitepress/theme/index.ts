@@ -1,33 +1,40 @@
-import { h } from 'vue'
-import TwoslashFloatingVue from '@shikijs/vitepress-twoslash/client'
-import '@shikijs/vitepress-twoslash/style.css'
-import 'virtual:group-icons.css'
-import 'vitepress-plugin-graphviz/style.css'
-import Theme from '@voidzero-dev/vitepress-theme/src/vite'
-import './styles.css'
-
-// components
-import SvgImage from './components/SvgImage.vue'
-import YouTubeVideo from './components/YouTubeVideo.vue'
-import NonInheritBadge from './components/NonInheritBadge.vue'
-import AsideSponsors from './components/AsideSponsors.vue'
-import ScrimbaLink from './components/ScrimbaLink.vue'
+import DefaultTheme from 'vitepress/theme'
+import { onMounted } from 'vue'
+import './custom.css'
 
 export default {
-  Layout() {
-    return h((Theme as any).Layout, null, {
-      'aside-ads-before': () => h(AsideSponsors),
+  ...DefaultTheme,
+  setup() {
+    onMounted(() => {
+      window.addEventListener('keydown', (e) => {
+        if (e.key !== 'Tab') return
+
+        const modal = document.querySelector('.DocSearch-Modal')
+        if (!modal) return
+
+        const focusableElements = modal.querySelectorAll(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        )
+        if (focusableElements.length === 0) return
+
+        const firstElement = focusableElements[0] as HTMLElement
+        const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement
+
+        if (e.shiftKey) {
+          if (document.activeElement === firstElement) {
+            lastElement.focus()
+            e.preventDefault()
+          }
+        } else {
+          if (document.activeElement === lastElement) {
+            firstElement.focus()
+            e.preventDefault()
+          }
+        }
+      })
     })
   },
-  enhanceApp(ctx: any) {
-    const { app } = ctx
-
-    app.component('SvgImage', SvgImage)
-    app.component('YouTubeVideo', YouTubeVideo)
-    app.component('NonInheritBadge', NonInheritBadge)
-    app.component('ScrimbaLink', ScrimbaLink)
-    app.use(TwoslashFloatingVue)
-
-    Theme.enhanceApp(ctx)
-  },
+  enhanceApp({ app, router, siteData }) {
+    // existing app enhancement logic
+  }
 }
